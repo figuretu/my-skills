@@ -1,6 +1,6 @@
 ---
 name: go-cli-tui
-description: Go CLI/TUI 最佳实践。涵盖 Cobra 命令模式、Bubble Tea TUI 开发、Lipgloss 样式和性能优化。
+description: "Go CLI/TUI 最佳实践。涵盖 Cobra 命令模式、Bubble Tea TUI 开发、Lipgloss 样式和性能优化。适用场景：(1) 使用 Cobra、Bubble Tea、Lipgloss 等框架开发 Go CLI/TUI 应用，(2) 对 Go CLI/TUI 代码进行 code review，检查是否符合最佳实践，(3) 优化现有 CLI/TUI 应用的性能或用户体验。"
 ---
 
 # Go CLI/TUI 最佳实践
