@@ -8,12 +8,12 @@ This file provides guidance to Agents when working with code in this repository.
 
 ## 语言规范 (Language Convention)
 
-**重要**: 所有 skill 的描述必须使用中文，但专业术语保持英文。
+**重要**: 
+- 自建 skill 的描述必须使用中文，但专业术语保持英文。
+- 外部迁移来的 skill 描述保持原语言，不需要翻译成中文。
 
 示例：
 - ✅ "下载飞书/Lark 文档到本地 Markdown 文件"
-- ✅ "上传本地 Markdown 文件到飞书云文档，支持指定目标位置"
-- ❌ "Download Feishu/Lark documents to local Markdown files"
 
 ## Skill 结构规范
 
