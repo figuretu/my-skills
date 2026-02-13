@@ -43,43 +43,84 @@ description: 通过 Context7 获取库/框架最新文档。优先使用已有�
 - 版本号（如 "React 19"、"Next.js 15"）
 - 具体功能/API（如 "useEffect"、"middleware"）
 
-### 第 2 步：搜索库
+### 第 2 步：搜索并选择库
 
-通过 Task tool 调用 context7-fetcher 子 skill：
+通过 Task tool 调用 general-purpose subagent，在子 agent 内部完成搜索和选择，只回传精炼结果：
 
 ```
 Task parameters:
-- subagent_type: Bash
-- description: "Search Context7 for library"
-- prompt: node <skill-dir>/scripts/context7-api.js search "<library-name>" "<rewritten-query>"
+- subagent_type: general-purpose
+- description: "Search Context7 for <library-name>"
+- prompt: |
+    Run this command to search for a library on Context7:
+    node <skill-dir>/scripts/context7-api.js search "<library-name>" "<rewritten-query>"
+
+    The API returns JSON with a `results` array. Each result has these key fields:
+    - id: library identifier (e.g. "/charmbracelet/bubbletea")
+    - title: display name
+    - description: one-line summary
+    - trustScore: reliability score (0-10)
+    - stars: GitHub stars (-1 if N/A)
+    - versions: available version tags
+    - verified: whether the source is verified
+
+    From the results, select the BEST matching library using these criteria (in priority order):
+    1. Title/name closely matches "<library-name>"
+    2. Highest trust score among matches
+    3. Version matches "<user-specified-version>" if the user specified one
+    4. Prefer verified and official packages over community forks
+
+    Return ONLY the following (plain text, not JSON):
+    - Selected library id
+    - Title
+    - Description (one line)
+    - Available versions (if any)
+    - Why this was selected (one sentence)
+
+    If no results found or all results are irrelevant, return "NO_RESULTS".
 ```
 
 其中 `<skill-dir>` 为本 skill 的安装目录路径。
 `<rewritten-query>` 为重写后的关键词查询（见下方 Query 重写规则）。
+`<user-specified-version>` 为用户指定的版本号（如未指定则省略版本匹配条件）。
 
-### 第 3 步：选择最佳匹配
+### 第 3 步：获取并筛选文档
 
-从搜索结果中选择库，优先级：
-
-1. 名称精确匹配
-2. 最高 trust score
-3. 版本匹配（如用户指定 "Next.js 15" → 优先 v15.x）
-4. 官方包优先于社区 fork
-
-### 第 4 步：获取文档
-
-通过 Task tool 调用 context7-fetcher 子 skill：
+通过 Task tool 调用 general-purpose subagent，在子 agent 内部获取文档并按用户问题筛选，只回传相关内容：
 
 ```
 Task parameters:
-- subagent_type: Bash
-- description: "Fetch documentation from Context7"
-- prompt: node <skill-dir>/scripts/context7-api.js context "<library-id>" "<rewritten-query>"
+- subagent_type: general-purpose
+- description: "Fetch <library-name> docs from Context7"
+- prompt: |
+    Run this command to fetch documentation from Context7:
+    node <skill-dir>/scripts/context7-api.js context "<library-id>" "<rewritten-query>"
+
+    The user's question/intent is: <user-question-summary>
+
+    The API returns JSON with:
+    - codeSnippets: array of code examples, each containing:
+      - codeTitle: snippet title
+      - codeDescription: what the code does
+      - codeLanguage: programming language
+      - codeList: array of { language, code } with actual source code
+    - infoSnippets: array of text-based documentation
+
+    Process the results and return ONLY content relevant to the user's question:
+    - Preserve actual code from codeList VERBATIM (do not summarize code)
+    - Include brief descriptions for context
+    - SKIP snippets that are not relevant to the user's question
+    - If many snippets are relevant, prioritize the most directly useful ones (3-5 max)
+    - Format as a clean, readable summary — not raw JSON
+
+    If the API returns empty results or fails, return "NO_DOCS_FOUND".
 ```
 
-### 第 5 步：整合到回答
+其中 `<user-question-summary>` 为用户问题的简要概括，帮助子 agent 判断哪些文档片段与用户需求相关。
 
-使用获取的文档：
+### 第 4 步：整合到回答
+
+使用子 agent 返回的筛选后文档：
 
 1. 基于最新信息准确回答
 2. 包含文档中的代码示例
@@ -143,10 +184,9 @@ node scripts/context7-api.js context <libraryId> <query>
 
 1. 用户显式调用，直接触发
 2. 重写 query：`middleware configuration`
-3. 搜索：`search "next.js" "middleware configuration"`
-4. 选择：`/vercel/next.js/v15.1.8`
-5. 获取：`context "/vercel/next.js/v15.1.8" "middleware configuration"`
-6. 返回最新文档内容
+3. 搜索+选择（subagent 内部完成）：搜索 "next.js"，subagent 返回 "选中 `/vercel/next.js/v15.1.8`"
+4. 获取+筛选（subagent 内部完成）：获取文档，subagent 按 "middleware configuration" 过滤，返回相关代码和说明
+5. 基于筛选后的文档回答用户
 
 ### 示例 2：API 不确定主动查询
 
@@ -155,10 +195,9 @@ node scripts/context7-api.js context <libraryId> <query>
 
 1. 识别知识缺口：`useFormStatus` 是 React 19 新增 API，训练数据可能不完整
 2. 重写 query：`useFormStatus hook API`
-3. 搜索：`search "react" "useFormStatus hook API"`
-4. 选择：`/facebook/react/v19.0.0`
-5. 获取：`context "/facebook/react/v19.0.0" "useFormStatus hook API"`
-6. 基于最新文档生成准确代码
+3. 搜索+选择：subagent 返回 "选中 `/facebook/react/v19.0.0`"
+4. 获取+筛选：subagent 按用户问题 "useFormStatus 的参数和返回值" 过滤，只返回该 Hook 的 API 签名和用法示例
+5. 基于筛选后的文档生成准确代码
 
 ### 示例 3：解决方案卡住主动查询
 
@@ -167,7 +206,6 @@ node scripts/context7-api.js context <libraryId> <query>
 
 1. 尝试用已有知识解决 → 不确定 `createMany` 是否支持嵌套
 2. 重写 query：`createMany nested writes`
-3. 搜索：`search "prisma" "createMany nested writes"`
-4. 选择：`/prisma/prisma`
-5. 获取：`context "/prisma/prisma" "createMany nested writes"`
-6. 基于最新文档确认正确用法
+3. 搜索+选择：subagent 返回 "选中 `/prisma/prisma`"
+4. 获取+筛选：subagent 按用户问题 "createMany 是否支持嵌套写入" 过滤，只返回 createMany 相关的文档和示例
+5. 基于筛选后的文档确认正确用法
