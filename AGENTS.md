@@ -22,6 +22,31 @@ This file provides guidance to Agents when working with code in this repository.
 - **适用场景**: 列出具体的使用场景，帮助 Claude 判断何时调用该 skill
 - **参数**: 清晰定义输入参数和格式要求
 
+## Skill 安装与管理
+
+Skill 通过 `npx skills` 管理（文档：`npx skills --help`）。用户常用的 agent 是 `claude-code` 和 `codex`。
+
+常用命令：
+```bash
+# 安装本仓库中的某个 skill（全局，同时装到 claude-code 和 codex）
+npx skills add "$MY_SKILLS_DIR" -g -a claude-code -a codex -s <skill-name> -y
+
+# 查看已安装的全局 skills
+npx skills ls -g
+
+# 查看某个 agent 已安装的 skills
+npx skills ls -g -a claude-code
+
+# 卸载某个 skill
+npx skills remove <skill-name> -g -a claude-code -a codex -y
+
+# 检查更新 / 更新所有 skills（仅限公开 registry 来源，不包含本地导入和私有仓库导入的 skill）
+npx skills check
+npx skills update
+```
+
+其中 `$MY_SKILLS_DIR` 指本仓库根目录路径。
+
 ## 提交规范 (Commit Convention)
 
 当 skill 流程涉及 git commit 操作时，不要硬编码 commit 命令和 message 格式。应先检查当前环境是否有已安装的 commit 相关 skill（如 git-commit），有则调用该 skill 完成提交；没有则按常规方式提交。
@@ -34,3 +59,5 @@ This file provides guidance to Agents when working with code in this repository.
 3. 技术术语（如 Markdown, JSON, URL）保持英文
 4. 翻译时，中文描述要自然流畅，避免生硬
 5. 对 skill 做任何增删改后，必须同步更新 `README.md` 中的 Skills 列表
+6. 对 skill 做任何修改后，提醒用户提交变更并重新 install（`npx skills add ... -s <skill-name>`），否则修改不会在 agent 中生效
+7. 执行 `git diff` 时，如果发现某个 skill 目录下有未提交的变更（可能是之前修改的残留），主动提示用户是否需要提交并重新 install
