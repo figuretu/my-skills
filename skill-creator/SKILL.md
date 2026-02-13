@@ -144,6 +144,8 @@ zoxide query my-skills 2>/dev/null
 
 Once located, record the path as `$MY_SKILLS_DIR` for use in subsequent steps.
 
+After locating the repository, read `$MY_SKILLS_DIR/AGENTS.md` to understand the repository conventions (naming, language, commit, structure). All subsequent steps must follow these conventions.
+
 ### Step 4: Initializing the Skill
 
 Skip this step if the skill already exists and only iteration is needed.
@@ -179,7 +181,7 @@ Also, delete any example files and directories not needed for the skill. The ini
 
 **Writing Style:** Write the entire skill using **imperative/infinitive form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
 
-**Language Convention:** Follow the AGENTS.md conventions in `$MY_SKILLS_DIR`. For self-built skills, use Chinese descriptions with English technical terms. For skills migrated from external sources, preserve the original language.
+**Language Convention:** Follow the language conventions from `$MY_SKILLS_DIR/AGENTS.md` (already read in Step 3).
 
 To complete SKILL.md, answer the following questions:
 

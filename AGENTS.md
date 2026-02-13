@@ -10,7 +10,7 @@ This file provides guidance to Agents when working with code in this repository.
 
 **重要**: 
 - 自建 skill 的描述必须使用中文，但专业术语保持英文。
-- 外部迁移来的 skill 描述保持原语言，不需要翻译成中文。
+- 从 npx skills 迁移来的 skill 描述保持原语言，不需要翻译成中文。
 
 示例：
 - ✅ "下载飞书/Lark 文档到本地 Markdown 文件"
@@ -19,7 +19,6 @@ This file provides guidance to Agents when working with code in this repository.
 
 每个 skill 应该包含：
 - **名称**: 使用 kebab-case 命名（如 `upload-to-lark`, `download-lark-doc`）
-- **描述**: 中文描述功能，专业术语用英文
 - **适用场景**: 列出具体的使用场景，帮助 Claude 判断何时调用该 skill
 - **参数**: 清晰定义输入参数和格式要求
 
@@ -33,5 +32,5 @@ This file provides guidance to Agents when working with code in this repository.
 1. 确保描述清晰、具体，包含足够的上下文信息
 2. 列出明确的适用场景，使用 "(1) ... (2) ... (3) ..." 格式
 3. 技术术语（如 Markdown, JSON, URL）保持英文
-4. 中文描述要自然流畅，避免生硬翻译
+4. 翻译时，中文描述要自然流畅，避免生硬
 5. 对 skill 做任何增删改后，必须同步更新 `README.md` 中的 Skills 列表
