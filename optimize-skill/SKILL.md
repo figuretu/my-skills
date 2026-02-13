@@ -77,6 +77,27 @@ npx skills add "$MY_SKILLS_DIR" -g -a claude-code -a codex -s <skill-name> -y
 npx skills ls -g -a claude-code
 ```
 
+6. 创建 `UPSTREAM.md` 记录源仓库信息：
+
+在 `$MY_SKILLS_DIR/<skill-name>/UPSTREAM.md` 中记录以下内容，方便日后源 skill 更新时重新应用定制改动：
+
+```markdown
+# Upstream Info
+
+- **Source**: <从 npx skills ls -g 输出中提取的 repo URL 或 registry 来源>
+- **Original Name**: <skill-name>
+- **Migrated At**: <迁移日期>
+
+## Original Description
+
+<复制迁移时 SKILL.md 中的 description 字段原文>
+
+## Customization Log
+
+| Date | Summary |
+|------|---------|
+```
+
 确认迁移完成后，继续第四步。
 
 ### 第四步：与用户讨论优化方案
@@ -93,10 +114,11 @@ npx skills ls -g -a claude-code
 
 根据讨论结果修改 `$MY_SKILLS_DIR/<skill-name>/SKILL.md`。修改时注意：
 
-- 描述使用中文，专业术语保持英文
+- 保持 skill 原有的语言风格：如果原 skill 是英文编写的，优化后仍使用英文；如果是中文编写的，则使用中文（专业术语保持英文）
 - 适用场景使用 "(1) ... (2) ... (3) ..." 格式
 - 保持 YAML frontmatter 中 name 和 description 字段完整
 - description 字段要具体，包含足够的上下文信息帮助 agent 判断何时触发
+- 如果 skill 目录下存在 `UPSTREAM.md`（即该 skill 是从外部迁移来的），在其 Customization Log 表格中追加一行，记录本次变更日期和改动摘要，格式如 `| 2025-01-15 | 优化了 description 中的触发条件描述 |`
 
 ### 第六步：同步更新 README
 
@@ -107,7 +129,7 @@ npx skills ls -g -a claude-code
 在 `$MY_SKILLS_DIR` 下提交优化后的改动，并推送到远程仓库备份：
 
 ```bash
-git -C "$MY_SKILLS_DIR" add <skill-name>/ README.md
+git -C "$MY_SKILLS_DIR" add <skill-name>/ README.md  # UPSTREAM.md 已包含在 <skill-name>/ 目录中
 git -C "$MY_SKILLS_DIR" commit -m "improve: optimize <skill-name> skill"
 git -C "$MY_SKILLS_DIR" push
 ```
