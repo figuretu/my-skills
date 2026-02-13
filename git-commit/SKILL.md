@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: '智能 Git 提交工具，基于 Conventional Commits 规范生成提交信息。适用场景：(1) 用户要求提交代码变更或创建 commit，(2) 用户提到 "/commit" 或表达提交意图，(3) 用户要求生成 commit message，(4) 用户完成代码修改后需要提交。支持从会话上下文或 diff 自动分析变更类型和范围，生成简洁规范的提交信息。'
+description: '所有 git commit 操作必须通过此 skill 执行，禁止直接运行 git commit 命令。基于 Conventional Commits 规范生成提交信息。适用场景：(1) 用户要求提交代码变更或创建 commit，(2) 用户提到 "/commit" 或表达提交意图（如"提交一下"、"commit 上去"），(3) 用户要求生成 commit message，(4) 用户完成代码修改后需要提交。支持从会话上下文或 diff 自动分析变更类型和范围。'
 ---
 
 # Git Commit
