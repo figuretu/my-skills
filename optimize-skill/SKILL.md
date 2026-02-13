@@ -62,25 +62,16 @@ npx skills ls -g
 3. 卸载通过 npx skills 安装的版本：
 
 ```bash
-npx skills remove <skill-name> -g -a '*' -y
+npx skills remove <skill-name> -g -a claude-code -a codex -y
 ```
 
-4. 在 `$MY_SKILLS_DIR` 下提交并推送新增的 skill：
+4. 从本地仓库重新安装该 skill：
 
 ```bash
-git -C "$MY_SKILLS_DIR" add <skill-name>/
-git -C "$MY_SKILLS_DIR" commit -m "feat: add <skill-name> skill"
-git -C "$MY_SKILLS_DIR" push
+npx skills add "$MY_SKILLS_DIR" -g -a claude-code -a codex -s <skill-name> -y
 ```
 
-5. 获取 my-skills 仓库的 GitHub 远程地址，从远程仓库重新安装：
-
-```bash
-REMOTE_URL=$(git -C "$MY_SKILLS_DIR" remote get-url origin | sed 's/.*github.com[:/]\(.*\)\.git/\1/')
-npx skills add "$REMOTE_URL" -g -a claude-code -a codex -s <skill-name> -y
-```
-
-6. 验证安装成功：
+5. 验证安装成功：
 
 ```bash
 npx skills ls -g -a claude-code
@@ -111,9 +102,9 @@ npx skills ls -g -a claude-code
 
 修改 `$MY_SKILLS_DIR/README.md` 中的 Skills 列表，确保与 skill 的最新描述一致。
 
-### 第七步：提交并推送变更
+### 第七步：提交变更并备份到远程
 
-在 `$MY_SKILLS_DIR` 下提交优化后的改动并推送到远程仓库：
+在 `$MY_SKILLS_DIR` 下提交优化后的改动，并推送到远程仓库备份：
 
 ```bash
 git -C "$MY_SKILLS_DIR" add <skill-name>/ README.md
@@ -123,9 +114,8 @@ git -C "$MY_SKILLS_DIR" push
 
 ### 第八步：重新安装
 
-从 GitHub 远程仓库重新安装更新后的 skill，确保改动生效：
+从本地仓库重新安装更新后的 skill，确保改动生效：
 
 ```bash
-REMOTE_URL=$(git -C "$MY_SKILLS_DIR" remote get-url origin | sed 's/.*github.com[:/]\(.*\)\.git/\1/')
-npx skills add "$REMOTE_URL" -g -a claude-code -a codex -s <skill-name> -y
+npx skills add "$MY_SKILLS_DIR" -g -a claude-code -a codex -s <skill-name> -y
 ```
