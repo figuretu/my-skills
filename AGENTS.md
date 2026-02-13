@@ -30,3 +30,4 @@ This file provides guidance to Agents when working with code in this repository.
 2. 列出明确的适用场景，使用 "(1) ... (2) ... (3) ..." 格式
 3. 技术术语（如 Markdown, JSON, URL）保持英文
 4. 中文描述要自然流畅，避免生硬翻译
+5. 对 skill 做任何增删改后，必须同步更新 `README.md` 中的 Skills 列表
