@@ -193,13 +193,13 @@ Update the skills table in `$MY_SKILLS_DIR/README.md` to include the new skill e
 
 ### Step 7: Commit and Push
 
-Commit the new skill to the my-skills repository and push to remote:
+Stage the new skill and updated README in the my-skills repository:
 
 ```bash
 git -C "$MY_SKILLS_DIR" add <skill-name>/ README.md
-git -C "$MY_SKILLS_DIR" commit -m "feat: add <skill-name> skill"
-git -C "$MY_SKILLS_DIR" push
 ```
+
+Then commit following the commit conventions defined in `$MY_SKILLS_DIR/AGENTS.md` — check if a commit-related skill is available and use it; otherwise commit normally. After committing, push to remote.
 
 ### Step 8: Global Install
 

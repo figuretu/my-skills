@@ -126,13 +126,13 @@ npx skills ls -g -a claude-code
 
 ### 第七步：提交变更并备份到远程
 
-在 `$MY_SKILLS_DIR` 下提交优化后的改动，并推送到远程仓库备份：
+在 `$MY_SKILLS_DIR` 下暂存优化后的改动：
 
 ```bash
 git -C "$MY_SKILLS_DIR" add <skill-name>/ README.md  # UPSTREAM.md 已包含在 <skill-name>/ 目录中
-git -C "$MY_SKILLS_DIR" commit -m "improve: optimize <skill-name> skill"
-git -C "$MY_SKILLS_DIR" push
 ```
+
+然后按照 `$MY_SKILLS_DIR/AGENTS.md` 中的提交规范完成提交——检查是否有可用的 commit 相关 skill，有则调用；没有则按常规方式提交。提交后推送到远程仓库。
 
 ### 第八步：重新安装
 

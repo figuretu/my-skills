@@ -23,6 +23,10 @@ This file provides guidance to Agents when working with code in this repository.
 - **适用场景**: 列出具体的使用场景，帮助 Claude 判断何时调用该 skill
 - **参数**: 清晰定义输入参数和格式要求
 
+## 提交规范 (Commit Convention)
+
+当 skill 流程涉及 git commit 操作时，不要硬编码 commit 命令和 message 格式。应先检查当前环境是否有已安装的 commit 相关 skill（如 git-commit），有则调用该 skill 完成提交；没有则按常规方式提交。
+
 ## 开发指南
 
 在创建或修改 skill 时：
