@@ -212,3 +212,36 @@ const (
 **严重程度**: 中
 
 **建议**: 通过构造函数或函数参数显式传递依赖。包级变量仅用于不可变常量或必要的单例。
+
+---
+
+### 11. 命名规范
+
+**说明**: 不遮蔽 Go 预声明标识符。这些内置名称可以被遮蔽但不应该被遮蔽，否则会导致难以排查的 bug。
+
+**通过标准**: 变量、参数、返回值名称不与预声明标识符冲突。
+
+**不通过标准**: 使用 `new`、`len`、`copy` 等作为变量名。
+
+**严重程度**: 高
+
+**预声明标识符完整列表**:
+
+- **Functions**: `new`, `make`, `len`, `cap`, `append`, `copy`, `delete`, `close`, `panic`, `recover`, `print`, `println`, `complex`, `real`, `imag`, `clear`, `min`, `max`
+- **Constants**: `true`, `false`, `iota`, `nil`
+- **Types**: `error`, `bool`, `string`, `int`, `int8`, `int16`, `int32`, `int64`, `uint`, `uint8`, `uint16`, `uint32`, `uint64`, `uintptr`, `float32`, `float64`, `complex64`, `complex128`, `byte`, `rune`, `any`, `comparable`
+
+**建议**:
+```go
+// 错误：遮蔽内置标识符。
+func process(new string, len int, make bool) error {
+    copy := "data"
+    return nil
+}
+
+// 正确：使用描述性名称。
+func process(name string, length int, shouldCreate bool) error {
+    dataCopy := "data"
+    return nil
+}
+```
