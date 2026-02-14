@@ -30,12 +30,17 @@ description: "语言无关的 Code Review。支持本地变更和远程 PR。运
 
 **远程 PR:**
 ```bash
-# 获取 PR 信息和 diff
+# 获取 PR 基本信息（标题、描述、分支、文件列表）
 gh pr view <number> --json title,body,baseRefName,headRefName,files
+# 获取已有评论和 review 意见，理解讨论历史
+gh pr view <number> --comments
+# 获取 diff
 gh pr diff <number>
 # 如需本地查看代码，checkout PR 分支
 gh pr checkout <number>
 ```
+
+阅读 PR 描述和已有评论，理解变更目标和讨论历史，避免重复已有反馈。
 
 **本地变更:**
 ```bash
