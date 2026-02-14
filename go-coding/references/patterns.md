@@ -17,8 +17,6 @@ grep -rn "func.*\(.*\).*\(.*,.*\)" --include="*.go" | grep -v "_test.go"
 
 **不通过标准**: 不必要地使用命名返回值，导致裸 return 令人困惑。
 
-**严重程度**: 低
-
 ---
 
 ### 2. 接受 interface，返回 struct
@@ -33,8 +31,6 @@ grep -rn "func.*interface{}" --include="*.go"
 **通过标准**: 函数接受窄 interface（如 `io.Reader`），返回具体 struct。
 
 **不通过标准**: 函数返回 interface 或接受过于宽泛的 `interface{}`。
-
-**严重程度**: 中
 
 **建议**:
 ```go
@@ -58,8 +54,6 @@ func NewClient() HTTPClient { ... }  // 返回 interface
 
 **不通过标准**: struct 初始化散落在代码各处，缺少验证。
 
-**严重程度**: 中
-
 **建议**:
 ```go
 func NewManager(dataDir string) (*Manager, error) {
@@ -79,8 +73,6 @@ func NewManager(dataDir string) (*Manager, error) {
 **通过标准**: 复杂配置使用 functional options 模式，清晰且可扩展。
 
 **不通过标准**: 构造函数参数列表过长，或过度暴露 struct 字段。
-
-**严重程度**: 低
 
 **建议**:
 ```go
@@ -109,8 +101,6 @@ func NewClient(opts ...Option) *Client {
 
 **不通过标准**: 深层继承层次或过度嵌入导致行为不透明。
 
-**严重程度**: 低
-
 **建议**:
 ```go
 type ResourceInfo struct {
@@ -128,8 +118,6 @@ type ResourceInfo struct {
 **通过标准**: 所有文件句柄、锁和连接都使用 `defer` 清理。
 
 **不通过标准**: 在多个 return 点手动清理，存在资源泄漏风险。
-
-**严重程度**: 高
 
 **建议**:
 ```go
@@ -153,8 +141,6 @@ func readFile(path string) ([]byte, error) {
 
 **不通过标准**: 巨型函数，深层嵌套逻辑。
 
-**严重程度**: 中
-
 ---
 
 ### 8. 使用常量替代魔法值
@@ -164,8 +150,6 @@ func readFile(path string) ([]byte, error) {
 **通过标准**: 超时、缓冲区大小和配置值定义为常量。
 
 **不通过标准**: 魔法数字散落在代码各处。
-
-**严重程度**: 中
 
 **建议**:
 ```go
@@ -185,8 +169,6 @@ const (
 **通过标准**: 定义了领域特定类型如 `Status` 或 `Mode`。
 
 **不通过标准**: 到处使用裸原始类型，缺少语义上下文。
-
-**严重程度**: 低
 
 **建议**:
 ```go
@@ -209,8 +191,6 @@ const (
 
 **不通过标准**: 可变的包级状态导致测试困难。
 
-**严重程度**: 中
-
 **建议**: 通过构造函数或函数参数显式传递依赖。包级变量仅用于不可变常量或必要的单例。
 
 ---
@@ -222,8 +202,6 @@ const (
 **通过标准**: 变量、参数、返回值名称不与预声明标识符冲突。
 
 **不通过标准**: 使用 `new`、`len`、`copy` 等作为变量名。
-
-**严重程度**: 高
 
 **预声明标识符完整列表**:
 

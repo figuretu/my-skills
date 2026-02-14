@@ -12,8 +12,6 @@ Go 测试编写最佳实践。
 
 **不通过标准**: 重复的测试代码，难以添加新测试用例。
 
-**严重程度**: 中
-
 **建议**:
 ```go
 func TestProcess(t *testing.T) {
@@ -57,8 +55,6 @@ func TestProcess(t *testing.T) {
 
 **不通过标准**: 测试没有子测试，不清楚哪个用例失败。
 
-**严重程度**: 中
-
 ---
 
 ### 3. 使用 interface 实现 mock
@@ -68,8 +64,6 @@ func TestProcess(t *testing.T) {
 **通过标准**: 外部依赖（HTTP、文件系统）通过 interface 访问。
 
 **不通过标准**: 直接使用具体类型，无法在没有真实依赖的情况下测试。
-
-**严重程度**: 高
 
 **建议**:
 ```go
@@ -99,8 +93,6 @@ func (m *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 
 **不通过标准**: 只测试正常路径，错误处理未测试。
 
-**严重程度**: 高
-
 ---
 
 ### 5. 使用 t.TempDir 创建临时文件
@@ -110,8 +102,6 @@ func (m *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 **通过标准**: 测试使用 `t.TempDir()` 自动清理，无临时文件泄漏。
 
 **不通过标准**: 手动创建临时目录，忘记在 defer 中清理。
-
-**严重程度**: 中
 
 **建议**:
 ```go
@@ -130,8 +120,6 @@ func TestFilePersistence(t *testing.T) {
 **通过标准**: 资源通过 `t.Cleanup()` 注册，即使失败也会清理。
 
 **不通过标准**: defer 中的清理在 fatal 时不运行，资源泄漏。
-
-**严重程度**: 中
 
 **建议**:
 ```go
@@ -159,8 +147,6 @@ func TestWithEnvVar(t *testing.T) {
 
 **不通过标准**: 错误指向辅助函数而非失败的测试。
 
-**严重程度**: 低
-
 **建议**:
 ```go
 func assertNoError(t *testing.T, err error) {
@@ -181,8 +167,6 @@ func assertNoError(t *testing.T, err error) {
 
 **不通过标准**: 测试在单独目录中，非标准命名。
 
-**严重程度**: 低
-
 ---
 
 ### 9. 安全时使用并行测试
@@ -192,8 +176,6 @@ func assertNoError(t *testing.T, err error) {
 **通过标准**: 独立测试并行运行，测试套件更快完成。
 
 **不通过标准**: 共享状态的测试并行运行导致不稳定。
-
-**严重程度**: 低
 
 **建议**:
 ```go
@@ -218,8 +200,6 @@ func TestSomething(t *testing.T) {
 **通过标准**: 错误测试验证错误消息包含预期文本。
 
 **不通过标准**: 只检查 `err != nil`，错误类型不对也能通过。
-
-**严重程度**: 中
 
 **建议**:
 ```go

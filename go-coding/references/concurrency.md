@@ -12,8 +12,6 @@ Go 并发编程最佳实践：goroutine、channel 和同步原语。
 
 **不通过标准**: 共享状态未同步访问，可能存在竞态条件。
 
-**严重程度**: 严重
-
 **建议**:
 ```go
 type Manager struct {
@@ -39,8 +37,6 @@ func (m *Manager) GetItem(name string) (*ItemInfo, bool) {
 
 **不通过标准**: 读密集场景使用 `sync.Mutex`，造成不必要的竞争。
 
-**严重程度**: 中
-
 ---
 
 ### 3. 始终 defer 释放锁
@@ -50,8 +46,6 @@ func (m *Manager) GetItem(name string) (*ItemInfo, bool) {
 **通过标准**: 每个 `Lock()` 后紧跟 `defer Unlock()`。
 
 **不通过标准**: 在多个 return 点手动 unlock，panic 时有死锁风险。
-
-**严重程度**: 严重
 
 **建议**:
 ```go
@@ -79,8 +73,6 @@ func (m *Manager) StopAll() {
 
 **不通过标准**: goroutine 通过全局变量共享状态且缺少同步。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 func startStream() <-chan Message {
@@ -103,8 +95,6 @@ func startStream() <-chan Message {
 
 **不通过标准**: 无缓冲 channel 导致死锁，过大缓冲浪费内存。
 
-**严重程度**: 中
-
 **建议**:
 ```go
 // 带缓冲：生产者不应因慢消费者而阻塞
@@ -123,8 +113,6 @@ done := make(chan struct{})
 **通过标准**: channel 由发送数据的 goroutine 关闭，接收者不关闭。
 
 **不通过标准**: 接收者关闭 channel，导致发送时 panic。
-
-**严重程度**: 严重
 
 **建议**:
 ```go
@@ -151,8 +139,6 @@ for msg := range ch {
 
 **不通过标准**: 操作无法取消，context 被忽略或未传递。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 func fetchData(ctx context.Context, url string) (*Data, error) {
@@ -176,8 +162,6 @@ func fetchData(ctx context.Context, url string) (*Data, error) {
 **通过标准**: 单例初始化使用 `sync.Once`，无竞态条件。
 
 **不通过标准**: 双重检查锁定或其他易出错的模式。
-
-**严重程度**: 中
 
 **建议**:
 ```go
@@ -205,8 +189,6 @@ func GetInstance() (*Service, error) {
 
 **不通过标准**: goroutine 永久阻塞在 channel 读取上或没有退出路径。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 go func() {
@@ -233,8 +215,6 @@ go func() {
 **通过标准**: 并行操作使用 WaitGroup，所有 goroutine 都被等待。
 
 **不通过标准**: 主 goroutine 在 worker 完成前退出，存在竞态条件。
-
-**严重程度**: 中
 
 **建议**:
 ```go
