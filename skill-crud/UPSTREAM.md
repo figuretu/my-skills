@@ -12,4 +12,5 @@ Guide for creating effective skills. This skill should be used when users want t
 
 | Date | Summary |
 |------|---------|
-| 2026-02-13 | Migrated to my-skills repo; replaced zip-packaging (Step 5-6) with auto-integration workflow (locate repo → sync README → commit & push → global install) |
+| 2026-02-13 | Migrated to my-skills repo; replaced zip-packaging with auto-integration workflow (locate repo → sync README → commit & push → global install) |
+| 2026-02-14 | Merged skill-creator + optimize-skill → skill-crud; extracted design principles to references/; unified create/optimize workflows |
