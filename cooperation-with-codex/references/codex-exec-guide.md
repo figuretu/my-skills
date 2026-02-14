@@ -33,7 +33,7 @@ codex exec resume --last "<follow-up prompt>"
 通过 stdin 传递 prompt：
 
 ```bash
-echo "<prompt>" | codex exec resume --last 2>/dev/null
+echo "<prompt>" | codex exec resume --last 2>.ai_docs/codex_call/<描述性文件名>-followup.log
 ```
 
 ### 恢复指定 session
@@ -71,10 +71,11 @@ codex exec --json "<prompt>" | jq
 ## 协作模式默认命令
 
 ```bash
+mkdir -p .ai_docs/codex_call
 codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
-  -C "<workdir>" "<prompt>" 2>/dev/null
+  -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
 - `--full-auto`：允许工作区写入，比 `--dangerously-bypass-approvals-and-sandbox` 更安全
-- `2>/dev/null`：抑制 thinking tokens（stderr），调试时移除
-- Bash timeout 建议设为 300000ms
+- stderr 重定向到日志文件，供人类异步查看中间状态，Claude 不应阅读
+- Bash timeout 建议设为 600000ms（10 分钟）

@@ -70,16 +70,27 @@ git rev-parse HEAD
 
 构造 `codex exec` 命令，将子任务委派给 Codex。
 
-默认命令模板：
+#### stderr 日志
+
+每次调用前，确保 `.ai_docs/codex_call/` 目录存在，并为本次调用生成描述性日志文件名（简要说明调用目的，方便人类查看中间状态）：
+
+```bash
+mkdir -p .ai_docs/codex_call
+```
+
+#### 默认命令模板
 
 ```bash
 codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
-  -C "<workdir>" "<prompt>" 2>/dev/null
+  -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
-Bash timeout 设为 300000ms（5 分钟）。
+Bash timeout 设为 600000ms（10 分钟）。
 
-Prompt 编写规范：
+日志文件名示例：`add-error-handling-to-api.log`、`refactor-user-model.log`。
+
+#### Prompt 编写规范
+
 - 明确指定要修改的文件路径
 - 描述期望的具体变更，而非抽象目标
 - 提供必要上下文（相关类型定义、接口约定、已有模式）
@@ -113,15 +124,16 @@ git diff
 根据审查结果决定下一步：
 
 - **通过** → 继续下一个子任务，或告知用户本轮任务完成
-- **需修改** → 回到第 3 步，构造修正 prompt 重新委派。可使用 `codex exec resume --last` 在同一 session 中继续：
+- **需修改** → **Never** 阅读 stderr 日志文件。使用 `codex exec resume --last` 在同一 session 中继续指挥 Codex 修正：
   ```bash
-  echo "<修正 prompt>" | codex exec resume --last 2>/dev/null
+  echo "<修正 prompt>" | codex exec resume --last 2>.ai_docs/codex_call/<描述性文件名>-followup.log
   ```
-- **需回滚** → 恢复到 checkpoint：
+- **需回滚** → 恢复到 checkpoint 后，新开 session 重新委派（回到第 3 步）：
   ```bash
   git checkout <checkpoint-hash> -- .
   ```
-  然后回到第 3 步重新委派
+
+关键原则：即使 Codex 回复不符合预期，也不要阅读 stderr 日志文件来分析原因。stderr 日志仅供人类异步查看中间状态。Claude 应基于 `git diff` 审查结果决定是 resume 进一步指挥还是回滚重来。
 
 ## 高级用法
 
@@ -131,7 +143,7 @@ git diff
 
 ```bash
 codex exec --full-auto -m gpt-5.2 -c model_reasoning_effort=high \
-  -C "<workdir>" "<prompt>" 2>/dev/null
+  -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
 ### 大型任务分解策略
@@ -150,14 +162,14 @@ codex exec --full-auto -m gpt-5.2 -c model_reasoning_effort=high \
 ```bash
 codex exec --full-auto --sandbox danger-full-access \
   -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
-  -C "<workdir>" "<prompt>" 2>/dev/null
+  -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
 仅在用户确认后使用 `danger-full-access`。
 
 ## 注意事项
 
-- **超时处理**：Bash 工具 timeout 设为 300000ms。如果 Codex 超时，缩小任务范围后重试
-- **错误重试**：Codex 执行失败时，先分析 stderr 输出（去掉 `2>/dev/null` 查看），再决定是否调整 prompt 重试
+- **超时处理**：Bash 工具 timeout 设为 600000ms（10 分钟）。如果 Codex 超时，缩小任务范围后重试
+- **stderr 日志**：stderr 重定向到 `.ai_docs/codex_call/` 下的日志文件，供人类异步查看中间状态。Claude 不应阅读这些文件，而是通过 `git diff` 审查结果来判断下一步
+- **错误处理**：Codex 执行失败或结果不符合预期时，优先 resume session 进一步指挥；问题严重时回滚到 checkpoint 后新开 session 重试
 - **不跳过 git 检查**：协作模式依赖 git 追踪变更，不使用 `--skip-git-repo-check`
-- **抑制 stderr**：默认 `2>/dev/null` 抑制 thinking tokens 输出，调试时可移除
