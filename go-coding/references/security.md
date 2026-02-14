@@ -12,8 +12,6 @@ Go 安全编码最佳实践。
 
 **不通过标准**: 凭证出现在 debug 日志中，token 被打印到 stderr。
 
-**严重程度**: 严重
-
 **建议**:
 ```go
 // 对所有日志进行脱敏
@@ -52,8 +50,6 @@ func logHeaders(kind string, hdr http.Header) {
 
 **不通过标准**: 仅手动脱敏，模式遗漏常见凭证格式。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 var sensitivePatterns = []struct {
@@ -80,8 +76,6 @@ var sensitivePatterns = []struct {
 **通过标准**: 所有用户输入已验证，强制执行长度限制，拒绝无效输入。
 
 **不通过标准**: 未检查的输入传递给系统调用，文件路径未验证。
-
-**严重程度**: 严重
 
 **建议**:
 ```go
@@ -114,8 +108,6 @@ func processFile(path string) error {
 
 **不通过标准**: 请求无超时，使用默认 http.Client。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 func fetchData(url string) ([]byte, error) {
@@ -146,8 +138,6 @@ func fetchData(url string) ([]byte, error) {
 
 **不通过标准**: 无限制读取可能耗尽内存。
 
-**严重程度**: 中
-
 **建议**:
 ```go
 const maxBodySize = 10 * 1024 * 1024  // 10MB
@@ -175,8 +165,6 @@ func readBody(resp *http.Response) ([]byte, error) {
 
 **不通过标准**: 全局可写文件（0666、0777），敏感数据在全局可读文件中。
 
-**严重程度**: 高
-
 **建议**:
 ```go
 // 配置文件 — 仅所有者读写
@@ -199,8 +187,6 @@ os.MkdirAll(dir, 0755)
 
 **不通过标准**: 用户输入直接拼入 shell 命令，未转义特殊字符。
 
-**严重程度**: 严重
-
 **建议**:
 ```go
 // 使用 exec.Command 分离参数（安全）
@@ -219,8 +205,6 @@ cmd := exec.Command("sh", "-c", "git commit -m " + message)
 **通过标准**: 所有路径用 `filepath.Clean` 清理，路径相对基目录验证。
 
 **不通过标准**: 用户控制的路径直接使用，`../` 序列可能生效。
-
-**严重程度**: 严重
 
 **建议**:
 ```go
@@ -245,8 +229,6 @@ func safeReadFile(baseDir, userPath string) ([]byte, error) {
 
 **不通过标准**: 突然终止，资源处于不一致状态。
 
-**严重程度**: 中
-
 **建议**:
 ```go
 func setupSignalHandler(cleanup func()) {
@@ -270,8 +252,6 @@ func setupSignalHandler(cleanup func()) {
 **通过标准**: 错误消息描述问题但不暴露秘密。
 
 **不通过标准**: 密码或 token 出现在错误输出中。
-
-**严重程度**: 高
 
 **建议**:
 ```go
