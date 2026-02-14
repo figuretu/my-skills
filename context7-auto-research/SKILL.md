@@ -143,7 +143,7 @@ node scripts/context7-api.js context <libraryId> <query>
 
 支持两种方式：
 
-1. `.env` 文件（推荐）：在 skill 目录创建 `.env`，参考 `.env.example`
+1. `.env` 文件：在 skill 目录创建 `.env`，参考 `.env.example`
 2. 环境变量：`export CONTEXT7_API_KEY="your-api-key"`
 
 优先级：环境变量 > .env 文件。未设置时使用公共速率限制（配额较低）。
