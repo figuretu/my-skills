@@ -184,7 +184,7 @@ scripts/skill-ops.sh install <skill-name>
 
 更新 `$MY_SKILLS_DIR/README.md` 中的 Skills 列表，确保与 skill 最新描述一致。
 
-### 提交并推送
+### 提交变更
 
 暂存改动：
 
@@ -192,7 +192,7 @@ scripts/skill-ops.sh install <skill-name>
 scripts/skill-ops.sh stage <skill-name>
 ```
 
-按 `$MY_SKILLS_DIR/AGENTS.md` 中的提交规范完成提交——检查是否有可用的 commit 相关 skill，有则调用；没有则按常规方式提交。提交后推送到远程仓库。
+检查是否有可用的 commit 相关 skill，有则调用；没有则提示用户是否提交和推送。
 
 ### 重新安装
 
