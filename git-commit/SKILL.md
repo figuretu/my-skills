@@ -9,6 +9,16 @@ description: '所有 git commit 操作必须通过此 skill 执行，禁止直�
 
 基于 Conventional Commits 规范，智能分析变更并生成简洁的提交信息。优先使用会话上下文，无上下文时回退到 git diff 分析。
 
+## 调用模式
+
+### 交互模式（默认）
+
+用户直接调用 skill / 表达出提交意图，或者 Agent 当前的 Edit 任务已经完成，进入收尾工作。展示 commit message 并通过 AskUserQuestion 让用户决定下一步操作。
+
+### 自动模式
+
+agent 正在实现大型需求或任务，需要阶段性 checkpoint 保持中间状态可靠、可追溯。直接生成并执行 commit，不向用户提问，禁止使用 push。由调用时的任务状态决定是否进入此模式。
+
 ## Commit 格式
 
 ```
@@ -93,7 +103,14 @@ git add src/components/*
 
 ### Step 4: 确认并提交
 
-展示提交信息，等待用户确认后执行：
+**交互模式**（默认）：使用 AskUserQuestion 向用户展示 commit message 并询问下一步操作（选项按此顺序）：
+1. **提交并推送** — commit + push 到远程
+2. **仅提交** — 只 commit，不 push
+3. **跳过** — 不提交
+
+用户确认后按选择执行。
+
+**自动模式**：agent 正在实现大型需求或任务，需要阶段性 checkpoint 保持中间状态可靠、可追溯。直接 commit 不提问，禁止使用 push。由调用时的任务状态决定是否进入自动模式。
 
 ```bash
 git commit -m "$(cat <<'EOF'
