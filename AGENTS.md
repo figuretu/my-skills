@@ -26,9 +26,22 @@ This file provides guidance to Agents when working with code in this repository.
 
 Skill 通过 `npx skills` 管理（文档：`npx skills --help`）。用户常用的 agent 是 `claude-code` 和 `codex`。
 
-常用命令：
+### 安装规则
+
+仓库根目录的 `install-rules.json` 定义了每个 skill 的安装目标 agent：
+
+- `defaults` 对所有 skill 生效（默认安装到 claude-code + codex）
+- `skills` 中可为特定 skill 覆盖默认规则（如 `cooperation-with-codex` 仅安装到 claude-code）
+
+安装 skill 前必须读取此文件，按规则决定 `-a` 参数。`skill-ops.sh install` 已自动处理。
+
+### 常用命令
+
 ```bash
-# 安装本仓库中的某个 skill（全局，同时装到 claude-code 和 codex）
+# 安装本仓库中的某个 skill（自动按 install-rules.json 决定目标 agent）
+scripts/skill-ops.sh install <skill-name>
+
+# 手动安装（需自行查阅 install-rules.json 确定 -a 参数）
 npx skills add "$MY_SKILLS_DIR" -g -a claude-code -a codex -s <skill-name> -y
 
 # 查看已安装的全局 skills
