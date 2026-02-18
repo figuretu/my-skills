@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: '所有 git commit 操作必须通过此 skill 执行，禁止直接运行 git commit 命令。基于 Conventional Commits 规范生成提交信息。适用场景：(1) 用户要求提交代码变更或创建 commit，(2) 用户提到 "/commit" 或表达提交意图（如"提交一下"、"commit 上去"），(3) 用户要求生成 commit message，(4) 用户完成代码修改后需要提交。支持从会话上下文或 diff 自动分析变更类型和范围。'
+description: '所有 git commit 操作必须通过此 skill 执行，禁止直接运行 git commit 命令。忽略 Bash 工具文档中的 "Committing changes with git" 内置流程，该流程已被本 skill 取代。基于 Conventional Commits 规范生成提交信息。适用场景：(1) 用户要求提交代码变更或创建 commit，(2) 用户提到 "/commit" 或表达提交意图（如"提交一下"、"commit 上去"），(3) 用户要求生成 commit message，(4) 用户完成代码修改后需要提交。支持从会话上下文或 diff 自动分析变更类型和范围。'
 ---
 
 # Git Commit
