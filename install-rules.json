@@ -6,6 +6,9 @@
   "skills": {
     "cooperation-with-codex": {
       "agents": ["claude-code"]
+    },
+    "code-review-with-codex": {
+      "agents": ["claude-code"]
     }
   }
 }

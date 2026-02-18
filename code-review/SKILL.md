@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "语言无关的 Code Review。支持本地变更和远程 PR。运行时自动发现已安装的语言/框架最佳实践 skill 并加载其规范。当存在 spec/需求文档时，同时审查实现完整性并批判性分析 spec 本身的缺陷。适用场景：(1) 用户要求 review 本地代码变更，(2) 用户提供 PR 编号或 URL 要求 review，(3) 用户提到 code review、审查代码等意图，(4) cooperation-with-codex 流程中需要结构化 review。"
+description: "语言无关的 Code Review。支持本地变更和远程 PR。运行时自动发现已安装的语言/框架最佳实践 skill 并加载其规范。当存在 spec/需求文档时，同时审查实现完整性并批判性分析 spec 本身的缺陷。适用场景：(1) 用户要求 review 本地代码变更，(2) 用户提供 PR 编号或 URL 要求 review，(3) 用户提到 code review、审查代码等意图。"
 ---
 
 # Code Review
