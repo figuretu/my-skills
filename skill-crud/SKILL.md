@@ -13,8 +13,8 @@ description: "创建、优化和迭代 skill。适用场景：(1) 用户想创�
 |------|------|
 | `scripts/skill-ops.sh locate-repo` | 查找并输出 my-skills 仓库路径 |
 | `scripts/skill-ops.sh check <name>` | 检查 skill 本地存在性 + 全局安装状态 |
-| `scripts/skill-ops.sh install <name>` | 从本地仓库安装/重装 skill（claude-code + codex） |
-| `scripts/skill-ops.sh uninstall <name>` | 从所有 agent 全局卸载 skill |
+| `scripts/skill-ops.sh install <name>` | 从本地仓库安装/重装 skill（按 `install-rules.json` 决定目标 agent） |
+| `scripts/skill-ops.sh uninstall <name>` | 从所有默认 agent 全局卸载 skill |
 | `scripts/skill-ops.sh stage <name>` | git add skill 目录 + README.md，显示暂存状态 |
 | `scripts/init_skill.py <name> --path <path>` | 初始化新 skill 目录（生成模板 SKILL.md + 示例资源） |
 | `scripts/quick_validate.py <skill-dir>` | 验证 skill 结构（frontmatter、命名规范等） |

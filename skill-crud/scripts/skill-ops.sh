@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Target agents for install/uninstall
-AGENTS=(claude-code codex)
+# Default agents (used for uninstall — always clean from all)
+DEFAULT_AGENTS=(claude-code codex)
 
 # Locate the my-skills repo: zoxide → $MY_SKILLS_DIR env var → fail
 _resolve_repo() {
@@ -13,8 +13,37 @@ _resolve_repo() {
     return 1
 }
 
-_agent_flags() {
-    for agent in "${AGENTS[@]}"; do
+# Resolve target agents for a skill from install-rules.json (falls back to DEFAULT_AGENTS)
+_agents_for_skill() {
+    local skill_name="$1" repo rules_file
+    repo="$(_resolve_repo)"
+    rules_file="$repo/install-rules.json"
+    if [[ ! -f "$rules_file" ]]; then
+        printf '%s\n' "${DEFAULT_AGENTS[@]}"
+        return
+    fi
+    python3 - "$rules_file" "$skill_name" <<'PYEOF'
+import json, sys
+with open(sys.argv[1]) as f:
+    rules = json.load(f)
+cfg = rules.get("skills", {}).get(sys.argv[2])
+agents = cfg["agents"] if cfg and "agents" in cfg else rules.get("defaults", {}).get("agents", ["claude-code", "codex"])
+for a in agents:
+    print(a)
+PYEOF
+}
+
+# Build -a flags for install (respects install-rules.json)
+_install_agent_flags() {
+    local skill_name="$1"
+    while IFS= read -r agent; do
+        printf -- '-a %s ' "$agent"
+    done < <(_agents_for_skill "$skill_name")
+}
+
+# Build -a flags for uninstall (always targets all default agents)
+_default_agent_flags() {
+    for agent in "${DEFAULT_AGENTS[@]}"; do
         printf -- '-a %s ' "$agent"
     done
 }
@@ -45,7 +74,8 @@ install)
     name="${2:?Usage: $0 install <skill-name>}"
     repo="$(_resolve_repo)"
     echo "Installing $name from $repo ..."
-    npx skills add "$repo" -g $(_agent_flags) -s "$name" -y
+    echo "Agents: $(_agents_for_skill "$name" | tr '\n' ' ')"
+    npx skills add "$repo" -g $(_install_agent_flags "$name") -s "$name" -y
     echo "--- verify ---"
     npx skills ls -g -a claude-code | grep -i "$name" || echo "WARNING: not found after install"
     ;;
@@ -54,7 +84,7 @@ uninstall)
     # Uninstall a skill globally from all agents
     name="${2:?Usage: $0 uninstall <skill-name>}"
     echo "Uninstalling $name ..."
-    npx skills remove "$name" -g $(_agent_flags) -y
+    npx skills remove "$name" -g $(_default_agent_flags) -y
     ;;
 
 stage)
@@ -72,8 +102,8 @@ Usage: $0 <command> [skill-name]
 Commands:
   locate-repo          Find and output the my-skills repo path
   check <name>         Check local existence + global install status
-  install <name>       Install/reinstall skill from local repo (claude-code + codex)
-  uninstall <name>     Uninstall skill globally from all agents
+  install <name>       Install/reinstall skill (agents per install-rules.json)
+  uninstall <name>     Uninstall skill globally from all default agents
   stage <name>         Git-add skill dir + README.md, show status
 EOF
     ;;

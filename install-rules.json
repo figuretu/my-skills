@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "global": true,
+    "agents": ["claude-code", "codex"]
+  },
+  "skills": {
+    "cooperation-with-codex": {
+      "agents": ["claude-code"]
+    }
+  }
+}
