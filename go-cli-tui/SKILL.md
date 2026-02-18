@@ -1,11 +1,20 @@
 ---
 name: go-cli-tui
-description: "Go CLI/TUI 最佳实践。涵盖 Cobra 命令模式、Bubble Tea TUI 开发、Lipgloss 样式和性能优化。适用场景：(1) 使用 Cobra、Bubble Tea、Lipgloss 等框架开发 Go CLI/TUI 应用，(2) 对 Go CLI/TUI 代码进行 code review，检查是否符合最佳实践，(3) 优化现有 CLI/TUI 应用的性能或用户体验。"
+description: "Go CLI/TUI 最佳实践（编码规范类，与流程类 skill 不互斥）。涵盖 Cobra 命令模式、Bubble Tea TUI 开发、Lipgloss 样式和性能优化。适用场景：(1) 使用 Cobra、Bubble Tea、Lipgloss 等框架开发 Go CLI/TUI 应用，(2) 对 Go CLI/TUI 代码进行 code review，检查是否符合最佳实践，(3) 优化现有 CLI/TUI 应用的性能或用户体验，(4) 其他 skill 驱动的流程涉及 Go CLI/TUI 代码编写或修改时，作为编码规范补充加载。"
 ---
 
 # Go CLI/TUI 最佳实践
 
 通用的 Go CLI 和 TUI 开发最佳实践，基于 Cobra + Bubble Tea 生态。
+
+## 使用模式
+
+本 skill 是**编码规范类**，定位为 Go CLI/TUI 代码质量基线，与流程类 skill 不互斥。
+
+| 模式 | 场景 | 行为 |
+|------|------|------|
+| 独立 | 用户直接要求 Go CLI/TUI 开发指导、review 或优化 | 作为主 skill 加载 |
+| 协同 | 其他 skill 驱动的流程涉及 Go CLI/TUI 代码变更 | 与流程 skill 同时加载，约束代码质量 |
 
 ## 技术栈
 
