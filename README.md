@@ -12,4 +12,5 @@
 | [go-coding](./go-coding/SKILL.md) | Go 编码规范与最佳实践（编码规范类，与流程类 skill 不互斥），涵盖惯用模式、注释规范、错误处理、并发、测试和安全编码 |
 | [context7-auto-research](./context7-auto-research/SKILL.md) | 通过 Context7 获取库/框架最新文档。优先使用已有知识，仅在用户显式调用或已有知识无法解决问题时触发查询 |
 | [code-review](./code-review/SKILL.md) | 语言无关的 Code Review，支持本地变更和远程 PR。自动发现已安装的语言/框架最佳实践 skill 并加载其规范，存在 spec 时同时审查实现完整性和 spec 缺陷 |
-| [cooperation-with-codex](./cooperation-with-codex/SKILL.md) | Claude 与 Codex CLI 协作编程模式。Claude 负责调研、规划、编写 prompt 和 code review，所有代码编辑通过 Codex exec 执行 |
+| [code-review-with-codex](./code-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Code Review，并行执行后对比分析输出综合报告 |
+| [cooperation-with-codex](./cooperation-with-codex/SKILL.md) | Claude 与 Codex CLI 协作编程模式。Claude 负责调研、规划、编写 prompt，所有代码编辑通过 Codex exec 执行 |
