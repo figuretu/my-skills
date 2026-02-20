@@ -1,6 +1,6 @@
 ---
 name: code-review-with-codex
-description: "Claude 与 Codex 双视角 Code Review。并行执行 Claude review（调用 code-review skill）和 Codex review（通过 codex exec CLI），对比分析后输出综合报告到 `.ai_docs/review/`。适用场景：(1) 用户要求双 agent 协作 review，(2) 用户希望获得多视角的代码审查意见，(3) 用户提到 \"codex review\" 或 \"双重 review\"。仅安装到 claude-code。"
+description: "Claude 与 Codex 双视角 Code Review。并行执行 Claude review（调用 code-review skill）和 Codex review（通过 codex exec CLI），对比分析后输出综合报告到 `.ai_docs/review/`。适用场景：(1) 用户要求双 agent 协作 review，(2) 用户手动明确触发该 skill。codex 永远不使用本 skill。"
 ---
 
 # Code Review with Codex
@@ -9,7 +9,7 @@ Claude 与 Codex 双视角并行 Code Review，对比分析后输出综合报告
 
 ## 参考资料
 
-`references/codex-exec-guide.md` 包含 Codex CLI exec 命令的完整参考。首次构造 `codex exec` 命令前按需读取。
+`references/codex-exec-guide.md` 包含 Codex CLI exec 命令的完整参考。当工作流程中 `codex exec` 模板命令失败后才按需读取。
 
 ## 工作流程
 
