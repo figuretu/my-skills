@@ -9,6 +9,9 @@
     },
     "code-review-with-codex": {
       "agents": ["claude-code"]
+    },
+    "spec-review-with-codex": {
+      "agents": ["claude-code"]
     }
   }
 }

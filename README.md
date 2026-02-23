@@ -14,3 +14,4 @@
 | [code-review](./code-review/SKILL.md) | 语言无关的 Code Review，支持本地变更和远程 PR。自动发现已安装的语言/框架最佳实践 skill 并加载其规范，存在 spec 时同时审查实现完整性和 spec 缺陷 |
 | [code-review-with-codex](./code-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Code Review，并行执行后对比分析输出综合报告 |
 | [cooperation-with-codex](./cooperation-with-codex/SKILL.md) | Claude 与 Codex CLI 协作编程模式。Claude 负责调研、规划、编写 prompt，所有代码编辑通过 Codex exec 执行 |
+| [spec-review-with-codex](./spec-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Spec Review，并行审查需求/设计产出物后对比分析输出综合报告 |
