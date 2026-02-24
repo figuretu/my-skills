@@ -6,6 +6,10 @@ This file provides guidance to Agents when working with code in this repository.
 
 这个仓库用于管理 Agents 的自定义 skills。
 
+仓库采用 public/private 双层结构：
+- **根目录** 的 skill 是公开的，推送到 GitHub，全局安装
+- **`private/`** 目录是独立的 git 仓库（被父仓库 `.gitignore` 忽略），推送到内网仓库，仅在特定仓库级别安装
+
 ## 语言规范 (Language Convention)
 
 **重要**: 
@@ -28,12 +32,14 @@ Skill 通过 `npx skills` 管理（文档：`npx skills --help`）。用户常�
 
 ### 安装规则
 
-仓库根目录的 `install-rules.json` 定义了每个 skill 的安装目标 agent：
+仓库根目录的 `install-rules.json` 定义了每个 **public** skill 的安装目标 agent：
 
-- `defaults` 对所有 skill 生效（默认安装到 claude-code + codex）
+- `defaults` 对所有 public skill 生效（默认安装到 claude-code + codex）
 - `skills` 中可为特定 skill 覆盖默认规则（如 `cooperation-with-codex` 仅安装到 claude-code）
 
-安装 skill 前必须读取此文件，按规则决定 `-a` 参数。`skill-ops.sh install` 已自动处理。
+**Private skills 不受 `install-rules.json` 管理**，始终以 repo-level 方式安装（不带 `-g`），默认目标 agent 为 `claude-code`。
+
+安装 skill 前必须读取此文件，按规则决定 `-a` 参数。`skill-ops.sh install` 已自动处理 public/private 的区分。
 
 ### 常用命令
 
@@ -59,6 +65,23 @@ npx skills update
 ```
 
 其中 `$MY_SKILLS_DIR` 指本仓库根目录路径。
+
+### Private Skills
+
+`private/` 是独立的 git 仓库，有自己的版本控制和远程仓库。`skill-ops.sh` 会自动检测 skill 位于根目录还是 `private/` 下，并采用对应的安装/暂存策略：
+
+- `skill-ops.sh install <name>`：自动检测位置，private skill 以 repo-level 安装
+- `skill-ops.sh stage <name>`：自动在正确的 git 仓库中暂存
+- `skill-ops.sh check <name>`：同时搜索根目录和 `private/`
+
+Private 仓库的提交和推送需要单独操作：
+
+```bash
+cd "$MY_SKILLS_DIR/private"
+git add .
+git commit -m "..." # 如有 commit 相关 skill，先调用
+git push  # 推送到内网仓库
+```
 
 ## 提交规范 (Commit Convention)
 
