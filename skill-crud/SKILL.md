@@ -59,8 +59,11 @@ scripts/skill-ops.sh locate-repo
 - "这个 skill 应该支持哪些功能？"
 - "能举几个使用场景的例子吗？"
 - "用户说什么话应该触发这个 skill？"
+- "这个 skill 是 public（全局安装，推 GitHub）还是 private（仓库级别安装，推内网）？"
 
 避免一次问太多问题。当对 skill 应支持的功能有清晰认识后，结束此步。
+
+将 scope 记录为 `$SKILL_SCOPE`（`public` 或 `private`），后续步骤据此决定目标路径。
 
 ### C2：规划可复用内容
 
@@ -76,8 +79,16 @@ scripts/skill-ops.sh locate-repo
 
 ### C3：初始化 skill
 
+根据 `$SKILL_SCOPE` 决定目标路径：
+- `public`：`$MY_SKILLS_DIR`
+- `private`：`$MY_SKILLS_DIR/private`
+
 ```bash
+# public skill
 scripts/init_skill.py <skill-name> --path "$MY_SKILLS_DIR"
+
+# private skill
+scripts/init_skill.py <skill-name> --path "$MY_SKILLS_DIR/private"
 ```
 
 脚本会生成模板 SKILL.md 和示例资源目录。初始化后根据需要定制或删除示例文件。
@@ -182,11 +193,12 @@ scripts/skill-ops.sh install <skill-name>
 
 ### 同步 README
 
-更新 `$MY_SKILLS_DIR/README.md` 中的 Skills 列表，确保与 skill 最新描述一致。
+- **Public skill**：更新 `$MY_SKILLS_DIR/README.md` 中的 Skills 列表，确保与 skill 最新描述一致。
+- **Private skill**：更新 `$MY_SKILLS_DIR/private/README.md`（如存在），不修改主仓库 README。
 
 ### 提交变更
 
-暂存改动：
+暂存改动（脚本自动识别 public/private，在正确的 git 仓库中暂存）：
 
 ```bash
 scripts/skill-ops.sh stage <skill-name>
@@ -194,13 +206,17 @@ scripts/skill-ops.sh stage <skill-name>
 
 检查是否有可用的 commit 相关 skill，有则调用；没有则提示用户是否提交和推送。
 
+注意：private skill 的提交发生在 `$MY_SKILLS_DIR/private/` 子仓库中。
+
 ### 重新安装
 
-从本地仓库重新安装，确保改动生效：
+- **Public skill**：从本地仓库重新安装，确保改动生效：
 
 ```bash
 scripts/skill-ops.sh install <skill-name>
 ```
+
+- **Private skill**：跳过此步。Private skill 按需在目标项目仓库中安装，不在 skill 仓库本身安装。提醒用户到目标项目中执行 `scripts/skill-ops.sh install <skill-name>`。
 
 ### 迭代
 

@@ -2,6 +2,11 @@
 
 自定义 Claude Code Skills 集合。
 
+## 仓库结构
+
+- **根目录**：公开 skills，全局安装，推送到 GitHub
+- **`private/`**：私有 skills（独立 git 仓库，被 `.gitignore` 忽略），仓库级别安装，推送到内网仓库
+
 ## Skills 列表
 
 | Skill | 描述 |
