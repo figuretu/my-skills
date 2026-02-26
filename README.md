@@ -13,6 +13,7 @@
 | --- | --- |
 | [git-commit](./git-commit/SKILL.md) | 所有 git commit 操作必须通过此 skill 执行，基于 Conventional Commits 规范生成提交信息 |
 | [skill-crud](./skill-crud/SKILL.md) | 创建、优化和迭代 skill，统一管理 skill 全生命周期。支持从任意仓库触发，自动定位 my-skills 仓库 |
+| [preferred-coding-style](./preferred-coding-style/SKILL.md) | 用户个人编码风格偏好（编码规范类），语言无关，优先级高于系统默认约束和其他编码规范 skill |
 | [go-cli-tui](./go-cli-tui/SKILL.md) | Go CLI/TUI 最佳实践（编码规范类，与流程类 skill 不互斥），涵盖 Cobra 命令模式、Bubble Tea TUI 开发、Lipgloss 样式和性能优化 |
 | [go-coding](./go-coding/SKILL.md) | Go 编码规范与最佳实践（编码规范类，与流程类 skill 不互斥），涵盖惯用模式、注释规范、错误处理、并发、测试和安全编码 |
 | [context7-auto-research](./context7-auto-research/SKILL.md) | 通过 Context7 获取库/框架最新文档。优先使用已有知识，仅在用户显式调用或已有知识无法解决问题时触发查询 |
