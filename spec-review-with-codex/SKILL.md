@@ -117,10 +117,13 @@ Codex prompt 构造规则：
 - 要求不调用 OpenSpec 相关 skill，不修改任何文件
 - **完整嵌入「代码探索原则」和「审查检查清单」章节内容**，要求按相同维度和优先级输出结构化审查结果
 - **明确要求 Codex 独立探索项目代码**：读取项目元信息（AGENTS.md 等）、探索 spec 涉及的现有模块代码、验证 spec 中引用的接口和类型是否真实存在
+- **要求 Codex 使用中文输出审查报告**
 - 如果是 OpenSpec 变更目录，要求执行跨产出物对齐检查
 - 使用 Bash `run_in_background` 启动，不限时
 
 **Claude 审查（前台）：**
+
+Claude 使用中文进行审查并输出结果。
 
 1. 读取目标目录下所有产出物文件
 2. **探索项目代码**：按「代码探索原则」独立探索 spec 涉及的项目代码，重点关注现有架构、模式、接口定义和相关模块实现
@@ -135,7 +138,7 @@ Codex prompt 构造规则：
 
 等待 Codex 完成，读取 `.ai_docs/codex_call/spec-review-result.md`。
 
-对比两份审查结果，写入 `.ai_docs/review/<summary_id>-spec-review.md`：
+对比两份审查结果，**使用中文**写入 `.ai_docs/review/<summary_id>-spec-review.md`：
 
 ```markdown
 # Spec Review Report: <标题>
