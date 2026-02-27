@@ -10,7 +10,7 @@ Claude 与 Codex 双视角并行 Code Review，对比分析后输出综合报告
 ## 参考资料
 
 - `references/codex-exec-guide.md` — Codex CLI exec 命令参考。`codex exec` 失败时按需读取。
-- `references/review-checklist.md` — 通用代码审查检查清单（Security / Correctness / Performance / Maintainability / Testing）。Claude 审查时 MUST 读取。
+- `references/review-checklist.md` — 通用代码审查检查清单（Security / Correctness / Performance / Maintainability / Testing）。Claude 审查时按需读取作为审查基线。
 
 ## 工作流程
 
@@ -61,7 +61,7 @@ mkdir -p .ai_docs/codex_call .ai_docs/review
 codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
   -o .ai_docs/codex_call/code-review-result.md \
   -C "<workdir>" \
-  "使用 /code-review skill 对当前工作区的代码变更进行审查。审查时 MUST 加载以下编码规范 skill 作为审查标准：<matched_skills 列表>。<补充上下文：diff 范围、PR 信息、spec 路径等>" \
+  "使用 \$code-review skill 对当前工作区的代码变更进行审查。审查时 MUST 加载以下编码规范 skill 作为审查标准：<matched_skills 列表>。使用中文输出审查报告。<补充上下文：diff 范围、PR 信息、spec 路径等>" \
   2>.ai_docs/codex_call/code-review.log
 ```
 
@@ -83,9 +83,9 @@ codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
 
 ### Phase 2: Claude Review（前台执行）
 
-**MUST 基于 Phase 1b 已加载的全部标准执行审查。**
+基于 Phase 1b 加载的全部标准（通用 checklist + 编码规范 skill）执行审查。Checklist 和编码规范作为**内部审查依据**，不作为输出结构。
 
-按优先级逐项审查（基于已读取的 review-checklist.md）：
+**只关注发现的问题**，按以下优先级维度审查：
 
 | 优先级 | 维度 | 说明 |
 |--------|------|------|
@@ -95,7 +95,32 @@ codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
 | MEDIUM | Maintainability | 清晰度、抽象、重复 |
 | MEDIUM | Testing | 覆盖率、测试质量 |
 
-**MUST 同时应用** Phase 1b 中从编码规范 skill 提取的语言/框架特定标准。
+发现的问题按三个层级记录，每层使用不同详细度：
+
+**Critical**（必须修复）— 完整四要素：
+```
+### 简短标题
+- **位置**: file_path:line_number
+- **问题**: 具体描述（标注所属维度）
+- **影响**: 不修复的后果
+- **建议**: 具体修复方案
+```
+
+**Improvements**（建议改进）— 三要素：
+```
+### 简短标题
+- **位置**: file_path:line_number
+- **问题**: 具体描述
+- **理由**: 为什么值得改（可选）
+- **建议**: 具体改进方案
+```
+
+**Nitpicks**（品味级建议）— 轻量一行：
+```
+- `file_path:line_number` — 建议内容
+```
+
+无问题的层级不出现在输出中。
 
 **Spec 分析（条件执行）：** 如果 Phase 1b 发现了 spec/需求文档：
 - 实现完整性：需求中的每个功能点是否都有对应实现
@@ -103,19 +128,20 @@ codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
 
 将 Claude 审查结果暂存（不写文件，保留在上下文中）。
 
-### Phase 3: 收集 Codex 结果
+### Phase 3: 综合分析与报告
 
 等待 Codex 后台任务完成，读取 `.ai_docs/codex_call/code-review-result.md` 获取 Codex 审查结果。
 
-### Phase 4: 对比分析与综合
+**交叉验证：** 对 Codex 的每条发现：
+- 回到代码中验证问题是否确实存在
+- 如果上下文不足，读取更多相关代码补充判断
+- 评估 severity 是否合理（可升降级）
+- 给出 Claude 的综合建议（可能与 Codex 建议不同）
 
-对比两份审查结果，识别共同发现和各自独有发现。
-
-创建目录并写入报告：
-
-```bash
-mkdir -p .ai_docs/review
-```
+**归并分类：** 将两份审查结果按主题归并：
+- **共同发现**：同一位置/同一问题合并为一条，综合双方建议
+- **Claude 独有发现**：仅 Claude 发现的问题
+- **Codex 独有发现**：仅 Codex 发现的问题，附 Claude 验证结论
 
 写入 `.ai_docs/review/<summary_id>-review.md`，格式：
 
@@ -123,27 +149,21 @@ mkdir -p .ai_docs/review
 # Code Review Report: <标题>
 
 ## 审查目标
-[审查对象描述]
+[审查对象、diff 范围]
 
-## Claude Review
-[Claude 完整审查结果]
+## 共同发现
+[两方都指出的问题——可信度最高，每条含综合建议]
 
-## Codex Review
-[Codex 完整审查结果]
-
-## 对比分析
-
-### 共同发现
-[两方都指出的问题，可信度最高]
-
-### Claude 独有发现
+## Claude 独有发现
 [仅 Claude 发现的问题]
 
-### Codex 独有发现
-[仅 Codex 发现的问题]
+## Codex 独有发现
+[仅 Codex 发现的问题，每条含 Claude 验证结论]
 
 ## 综合结论
-[综合两方意见的最终评价和建议]
+[Verdict + 优先级排序的行动建议]
 ```
+
+每条问题沿用 Phase 2 定义的分层格式（Critical 四要素 / Improvements 三要素 / Nitpicks 一行）。在共同发现和独有发现中按 Critical → Improvements → Nitpicks 排列。综合建议中注明与对方建议的差异（如有）。无 finding 时对应章节不输出。
 
 向用户展示报告摘要，并告知完整报告路径。

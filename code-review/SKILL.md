@@ -81,7 +81,7 @@ git diff <base>..<head>
 
 ### Step 5: 代码审查分析
 
-按优先级逐项审查，参考 [review-checklist.md](references/review-checklist.md)：
+读取 [review-checklist.md](references/review-checklist.md) 作为审查基线。按以下优先级维度审查，**只关注发现的问题**，无问题的维度不输出：
 
 | 优先级 | 维度 | 说明 |
 |--------|------|------|
@@ -91,11 +91,11 @@ git diff <base>..<head>
 | MEDIUM | Maintainability | 清晰度、抽象、重复 |
 | MEDIUM | Testing | 覆盖率、测试质量 |
 
-**最佳实践 Skill 加载：** 读 diff 代码时，如果发现代码与 Step 2 记住的 skill 关联（如 `.go` 文件 → go-coding），则读取该 skill 的 SKILL.md 和相关 references，作为 review 的补充标准。无关联 skill 时仅使用通用 checklist。
+**最佳实践 Skill 加载：** 读 diff 代码时，如果发现代码与 Step 2 记住的 skill 关联（如 `.go` 文件 → go-coding），读取该 skill 的 SKILL.md 和相关 references 作为审查背景知识。无关联 skill 时仅使用通用 checklist。加载的编码规范作为内部审查依据，不单独列出检查结果。
 
 ### Step 6: 输出审查结果
 
-使用以下结构化格式输出：
+**核心原则：只输出发现的问题，不输出通过项。** 按三个层级分组，每层使用不同详细度：
 
 ```
 ## Summary
@@ -108,27 +108,39 @@ git diff <base>..<head>
 ### Spec 缺陷
 [发现的问题]
 
-## Findings
+## Critical
+[必须修复的问题——完整四要素格式]
 
-### Critical
-[必须修复才能合并的问题，含具体文件和行号]
+### 简短标题
+- **位置**: file_path:line_number
+- **问题**: 具体描述（标注所属维度如 Security / Correctness 等）
+- **影响**: 不修复的后果
+- **建议**: 具体修复方案
 
-### Improvements
-[建议改进但不阻塞合并的问题]
+## Improvements
+[建议改进但不阻塞合并——三要素格式]
 
-### Nitpicks
-[风格、命名等细微建议]
+### 简短标题
+- **位置**: file_path:line_number
+- **问题**: 具体描述
+- **理由**: 为什么值得改（可选，如"与项目现有模式不一致"）
+- **建议**: 具体改进方案
+
+## Nitpicks
+[风格、命名等品味级建议——轻量一行格式]
+
+- `file_path:line_number` — 建议内容
 
 ## Verdict
-[Approved ✅ / Request Changes 🔄 / Needs Discussion 💬]
+[Approved / Request Changes / Needs Discussion]
 [一句话说明理由]
 ```
 
 **输出规则：**
-- 每个 finding 必须包含具体文件路径和行号
-- 引用相关代码片段
-- 给出修改建议而非仅指出问题
-- 空的 section 不输出（如无 Critical 则省略该节）
+- Critical 和 Improvements 中每个 finding 必须包含具体文件路径和行号
+- 给出具体修改建议而非仅指出问题
+- 空的层级不输出（如无 Critical 则省略该节）
+- 无任何 finding 时仅输出 Summary + Verdict
 
 ### Step 7: 收尾
 
