@@ -4,14 +4,25 @@ set -euo pipefail
 # Default agents (used for uninstall — always clean from all)
 DEFAULT_AGENTS=(claude-code codex)
 # Default agents for private skills (repo-level install)
-PRIVATE_DEFAULT_AGENTS=(claude-code)
+PRIVATE_DEFAULT_AGENTS=(claude-code codex)
 
-# Locate the my-skills repo: zoxide → $MY_SKILLS_DIR env var → fail
+# Locate the my-skills repo: zoxide (query like `z skills`) -> $MY_SKILLS_DIR -> fail
 _resolve_repo() {
-    local dir
-    dir="$(zoxide query my-skills 2>/dev/null)" && [[ -d "$dir" ]] && { echo "$dir"; return; }
-    [[ -n "${MY_SKILLS_DIR:-}" && -d "$MY_SKILLS_DIR" ]] && { echo "$MY_SKILLS_DIR"; return; }
-    echo "ERROR: cannot locate my-skills repo" >&2
+    local dir=""
+    if command -v zoxide >/dev/null 2>&1; then
+        # zoxide may print a valid path but still exit non-zero (e.g. DB write blocked),
+        # so validate stdout instead of relying on exit status.
+        dir="$(zoxide query skills 2>/dev/null || true)"
+        [[ -n "$dir" && -d "$dir" ]] && { echo "$dir"; return; }
+    fi
+
+    if [[ -n "${MY_SKILLS_DIR:-}" ]]; then
+        [[ -d "$MY_SKILLS_DIR" ]] && { echo "$MY_SKILLS_DIR"; return; }
+        echo "ERROR: MY_SKILLS_DIR is set but invalid: $MY_SKILLS_DIR" >&2
+        return 1
+    fi
+
+    echo "ERROR: cannot locate my-skills repo (zoxide query failed and MY_SKILLS_DIR is unset)" >&2
     return 1
 }
 
