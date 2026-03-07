@@ -146,3 +146,89 @@ git diff <base>..<head>
 
 - **远程 PR**: 询问用户是否需要切回原分支（`gh pr checkout` 会切换分支）
 - **本地变更**: 无额外操作
+
+### Step 8: 生成 PR Reviewer 文档（可选）
+
+询问用户是否需要生成一份结构化的 PR Reviewer 文档。如果用户同意，执行以下步骤：
+
+#### 8.1 收集背景信息
+
+综合以下来源提取背景信息：
+- **PR 描述**: 从 Step 3 获取的 PR body
+- **Commit Messages**: 使用 `git log` 查看相关 commit 的 message
+- **相关文档**: 读取项目中的 spec、设计文档、README 等
+- **用户补充**: 如果自动提取的信息不足，询问用户补充背景说明
+
+生成背景说明的四个部分：
+- **现状 (Current State)**: 当前系统/代码的状态，存在什么问题或限制
+- **需求 (Requirements)**: 为什么需要这个变更，业务/技术驱动因素
+- **目标 (Goals)**: 这个 PR 希望达到什么效果，解决什么问题
+- **方案 (Approach)**: 为什么选择这种实现方式，关键的技术决策
+
+#### 8.2 生成文件变更描述
+
+基于 Step 3 获取的 diff 信息，为每个变更的文件生成 1-2 句话的描述：
+- 分析每个文件的 diff 内容
+- 总结该文件的主要变更意图
+- 按目录/模块分组展示
+
+#### 8.3 生成完整文档
+
+创建 markdown 文档，包含以下部分：
+
+```markdown
+# PR Review Report
+
+## 背景 (Context)
+
+### 现状 (Current State)
+[描述当前系统/代码的状态]
+
+### 需求 (Requirements)
+[说明为什么需要这个变更]
+
+### 目标 (Goals)
+[这个 PR 希望达到什么效果]
+
+### 方案 (Approach)
+[为什么选择这种实现方式]
+
+## 变更概览 (Changes Overview)
+
+**统计**: 修改 X 个文件，+Y/-Z 行
+
+**文件变更**:
+📝 path/to/file1.ext (+X, -Y)
+   → [1-2 句话描述该文件的主要变更]
+
+📝 path/to/file2.ext (+X, -Y)
+   → [1-2 句话描述该文件的主要变更]
+
+➕ path/to/new_file.ext (+X)
+   → [1-2 句话描述新增文件的用途]
+
+❌ path/to/deleted_file.ext (-X)
+   → [1-2 句话描述删除原因]
+
+## Review 结果 (Review Findings)
+
+[复用 Step 6 的输出内容：Summary、Critical、Improvements、Nitpicks、Verdict]
+
+## Spec 分析 (Spec Analysis)
+
+[如果 Step 4 触发，复用其输出内容]
+
+## 后续行动 (Action Items)
+
+- [ ] [Critical] [具体问题描述]
+- [ ] [High] [具体问题描述]
+- [ ] [Medium] [具体问题描述]
+- [ ] [Discussion] [需要讨论的问题]
+```
+
+#### 8.4 保存文档
+
+- **远程 PR**: 保存为 `PR_REVIEW_<number>.md`（如 `PR_REVIEW_123.md`）
+- **本地变更**: 保存为 `CODE_REVIEW_<timestamp>.md`（如 `CODE_REVIEW_20260307.md`）
+
+保存后告知用户文件路径。
