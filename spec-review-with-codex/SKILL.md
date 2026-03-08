@@ -116,7 +116,7 @@ Claude 和 Codex 的审查报告中，每个发现的问题必须按以下四要
 
 ```bash
 mkdir -p .ai_docs/codex_call .ai_docs/review
-codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
+codex exec --full-auto -m gpt-5.4 -c model_reasoning_effort=xhigh \
   -o .ai_docs/codex_call/spec-review-result.md \
   -C "<workdir>" \
   "<prompt>" \

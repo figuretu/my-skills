@@ -58,7 +58,7 @@ Phase 0 完成后，立即并行执行以下两件事：
 
 ```bash
 mkdir -p .ai_docs/codex_call .ai_docs/review
-codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
+codex exec --full-auto -m gpt-5.4 -c model_reasoning_effort=xhigh \
   -o .ai_docs/codex_call/code-review-result.md \
   -C "<workdir>" \
   "使用 \$code-review skill 对当前工作区的代码变更进行审查。审查时 MUST 加载以下编码规范 skill 作为审查标准：<matched_skills 列表>。使用中文输出审查报告。<补充上下文：diff 范围、PR 信息、spec 路径等>" \
