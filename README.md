@@ -23,3 +23,4 @@
 | [code-review-with-codex](./code-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Code Review，并行执行后对比分析输出综合报告 |
 | [cooperation-with-codex](./cooperation-with-codex/SKILL.md) | Claude 与 Codex CLI 协作编程模式。Claude 负责调研、规划、编写 prompt，所有代码编辑通过 Codex exec 执行 |
 | [spec-review-with-codex](./spec-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Spec Review，并行审查需求/设计产出物后对比分析输出综合报告 |
+| [brainstorm](./brainstorm/SKILL.md) | 文件驱动的结构化脑暴，只在用户直接触发时使用。逐个问题引导用户厘清思路，结论实时回写到脑暴文档，涉及前端视觉问题时自动生成 HTML 页面辅助判断 |
