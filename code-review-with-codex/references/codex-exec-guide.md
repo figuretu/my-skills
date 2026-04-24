@@ -14,7 +14,7 @@ codex exec [flags] "<prompt>"
 |------|------|
 | `--full-auto` | 允许编辑，sandbox 限制在工作区写入 |
 | `--sandbox <mode>` | `read-only`（默认）/ `workspace-write` / `danger-full-access` |
-| `-m, --model <MODEL>` | 指定模型（如 `gpt-5.3-codex`、`gpt-5.2`） |
+| `-m, --model <MODEL>` | 指定模型（如 `gpt-5.5`、`gpt-5.4`） |
 | `-c, --config <KEY=VALUE>` | 配置覆盖（如 `model_reasoning_effort=xhigh`） |
 | `-C, --cd <DIR>` | 指定工作目录 |
 | `-o, --output-last-message <PATH>` | 将最终消息写入文件 |
