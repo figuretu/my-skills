@@ -24,3 +24,4 @@
 | [cooperation-with-codex](./cooperation-with-codex/SKILL.md) | Claude 与 Codex CLI 协作编程模式。Claude 负责调研、规划、编写 prompt，所有代码编辑通过 Codex exec 执行 |
 | [spec-review-with-codex](./spec-review-with-codex/SKILL.md) | Claude 与 Codex 双视角 Spec Review，并行审查需求/设计产出物后对比分析输出综合报告 |
 | [brainstorm](./brainstorm/SKILL.md) | 文件驱动的结构化脑暴，只在用户直接触发时使用。作为有立场的思维伙伴，逐个问题与用户碰撞观点，结论实时回写到脑暴文档 |
+| [pr-walkthrough](./pr-walkthrough/SKILL.md) | PR / 分支变更深度解读，全量精读 diff 后产出自包含的 HTML 走读报告（旅程式叙事 + 真实代码逐跳走读 + 排查路标）。只做理解，不做 code review |

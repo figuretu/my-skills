@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR 解读 · 【分支或 PR 名】</title>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  pr-walkthrough 报告模板（样式真相源 + 组件目录）
+
+  使用方式：
+  - <style> 整体原样复制，不修改 CSS（保证历次报告视觉一致）
+  - 左侧 nav.toc 必须保留，条目与正文章节一一对应
+  - <main> 中的内容是各组件的示例实例：按报告内容增删实例，
+    【】中为占位文字。组件用途见各处注释。
+  ════════════════════════════════════════════════════════════════════
+-->
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --ink: #20251f;
+    --muted: #6f766b;
+    --line: #e3e1d9;
+    --accent: #0f766e;
+    --accent-soft: #e7f2f0;
+    --warn: #b45309;
+    --warn-soft: #fdf3e7;
+    --code-bg: #171d20;
+    --code-ink: #d8dfe3;
+    --code-comment: #8fa3ab;
+    --code-anno: #86c7be;
+    --before: #8b8f86;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.8;
+    display: flex; justify-content: center; gap: 40px; padding: 0 24px;
+  }
+  nav.toc {
+    position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow-y: auto;
+    width: 235px; flex-shrink: 0; padding: 36px 0 36px 4px; font-size: 13px;
+  }
+  nav.toc .toc-title { font-weight: 700; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .08em; margin-bottom: 10px; }
+  nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 3.5px 10px; border-left: 2px solid transparent; border-radius: 0 6px 6px 0; }
+  nav.toc a.sub { padding-left: 22px; font-size: 12px; }
+  nav.toc a:hover { color: var(--accent); background: var(--accent-soft); border-left-color: var(--accent); }
+  main { max-width: 790px; min-width: 0; padding: 36px 0 120px; }
+  @media (max-width: 1140px) { nav.toc { display: none; } }
+
+  h1 { font-size: 26px; line-height: 1.35; margin: 0 0 6px; }
+  .subtitle { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+  h2 { font-size: 21px; margin: 64px 0 14px; padding-top: 20px; border-top: 1px solid var(--line); }
+  h2 .no { color: var(--accent); margin-right: 8px; font-variant-numeric: tabular-nums; }
+  h3 { font-size: 16.5px; margin: 38px 0 10px; }
+  h3 .hno { color: var(--accent); font-size: 13px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+  h4 { font-size: 14.5px; margin: 24px 0 6px; }
+  p { margin: 10px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  strong { font-weight: 650; }
+  .dim { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+  .chip { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .chip b { color: var(--ink); font-weight: 650; }
+
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88em; background: #ecebe5; border-radius: 4px; padding: 1px 5px; }
+  pre { background: var(--code-bg); color: var(--code-ink); border-radius: 0 0 10px 10px; padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.62; margin: 0 0 16px; }
+  pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+  pre .c { color: var(--code-comment); font-style: italic; }
+  pre .a { color: var(--code-anno); font-style: italic; }
+  .codecap {
+    background: #232b2f; color: #aebcc2; font-size: 11.5px; font-family: ui-monospace, Menlo, monospace;
+    border-radius: 10px 10px 0 0; padding: 6px 16px; margin-top: 12px;
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .codecap .f { color: #d3e3df; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 14px 0; }
+  .callout.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+
+  .waypoint { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--warn); border-radius: 10px; padding: 12px 18px; margin: 22px 0; }
+  .waypoint h5 { margin: 0 0 8px; font-size: 13px; color: var(--warn); text-transform: uppercase; letter-spacing: .06em; }
+  .waypoint table { margin: 0; font-size: 13px; background: none; }
+  .waypoint th { background: none; padding-left: 0; }
+  .waypoint td { padding-left: 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; background: var(--surface); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #efeee8; font-size: 12px; color: var(--muted); font-weight: 650; }
+  tr:last-child td { border-bottom: none; }
+
+  .bar-row { display: grid; grid-template-columns: 130px 1fr 150px; align-items: center; gap: 12px; margin: 7px 0; font-size: 13px; }
+  .bar-row .nm { font-weight: 650; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+  .bar-track { background: #ecebe4; border-radius: 5px; height: 20px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, #14857c, #0f766e); border-radius: 5px; }
+  .bar-row .vol { color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+  .arch { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
+  @media (max-width: 760px) { .arch { grid-template-columns: 1fr; } }
+  .arch .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .arch .panel.before { border-style: dashed; }
+  .arch .panel h4 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+  .arch .panel.before h4 { color: var(--before); }
+  .arch .panel.after h4 { color: var(--accent); }
+  .channel { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+  .node { padding: 4px 10px; border: 1.5px solid #b9beb4; border-radius: 8px; background: #fbfaf7; font-weight: 650; font-size: 12px; white-space: nowrap; }
+  .node.hot { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .node.gone { border-color: #d0cdc4; color: #a3a79d; text-decoration: line-through; }
+  .pipe { flex: 1; min-width: 50px; position: relative; text-align: center; }
+  .pipe .lbl { display: block; font-size: 10.5px; color: var(--muted); line-height: 1.3; margin-bottom: 2px; }
+  .pipe .ln { border-top: 2px solid #a8ada2; position: relative; }
+  .pipe .ln::after { content: "▶"; position: absolute; right: -3px; top: -8.5px; font-size: 9px; color: #a8ada2; }
+  .pipe.duplex .ln::before { content: "◀"; position: absolute; left: -3px; top: -8.5px; font-size: 9px; color: #a8ada2; }
+  .pipe.hot .ln { border-top-color: var(--accent); }
+  .pipe.hot .ln::after, .pipe.hot .ln::before { color: var(--accent); }
+  .pipe.dead .ln { border-top-style: dashed; border-top-color: #cfccc3; }
+  .pipe.dead .ln::after { color: #cfccc3; }
+
+  .overview { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin: 14px 0 24px; }
+  .overview .ttl { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .hops { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; }
+  .hop { background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 3px 9px; font-weight: 600; white-space: nowrap; }
+  .hop.plain { background: #efeee8; color: var(--muted); }
+  .hop-arrow { color: #b0b5aa; }
+
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 14px 0; }
+  @media (max-width: 760px) { .vs-grid { grid-template-columns: 1fr; } }
+  .vs-grid .col-h { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .vs-grid .col-h.b { color: var(--before); }
+  .vs-grid .col-h.a { color: var(--accent); }
+  .flow { display: flex; flex-direction: column; }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 7px 12px; font-size: 13px; line-height: 1.55; }
+  .dn { text-align: center; color: #b0b5aa; line-height: 1; padding: 3px 0; font-size: 13px; }
+
+  .patch { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 12px 16px; margin: 12px 0; }
+  .patch .was, .patch .now { display: block; font-size: 13.5px; }
+  .patch .was::before { content: "以前"; background: #eceae2; color: var(--before); font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .patch .now::before { content: "现在"; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .patch .was { color: #5d6259; margin-bottom: 4px; }
+  .patch .why { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+  .risk-dot { margin-right: 6px; }
+  .footer-note { color: var(--muted); font-size: 12.5px; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<!-- 组件：左侧导航（必须保留）。条目与正文 h2 锚点一一对应；
+     长章节（如旅程）的关键小节用 class="sub" 加二级条目 -->
+<nav class="toc">
+  <div class="toc-title">目录</div>
+  <a href="#s1">1 · 【章节名】</a>
+  <a href="#s2">2 · 【章节名】</a>
+  <a class="sub" href="#s2-1">【小节名】</a>
+</nav>
+
+<main>
+
+<!-- 组件：页头。标题 + 元信息行 + 称重 chips -->
+<h1>【分支/PR 名】：【一句话定性】</h1>
+<p class="subtitle">【仓库】 · <code>【base...head】</code> · 【日期】 · 自包含，读完即弃</p>
+
+<div class="chips">
+  <div class="chip"><b>【N】</b> commits</div>
+  <div class="chip"><b>【N】</b> 文件</div>
+  <div class="chip"><b>+【N】 / −【N】</b> 行</div>
+  <div class="chip"><b>【N】%</b> 是测试代码</div>
+</div>
+
+<p class="small dim">写法说明：本文按「逐跳走读」展开——每个机制都给真实代码片段（取自分支、经裁剪，<span style="color:var(--accent)">青色斜体注释</span>为解读所加，灰色斜体是源码原注释的保留或意译），每段代码标注所在文件。每条旅程结尾有一张「排查路标」：将来出问题时，症状对应去哪个文件看哪个函数。</p>
+
+<!-- 组件：章节标题。h2 带编号锚点 -->
+<h2 id="s1"><span class="no">1</span>【章节名】</h2>
+<p>【正文。一段只讲一件事。】</p>
+
+<!-- 组件：称重条形图（变更地图用）。bar-fill 宽度按各子系统变更行数与最大者之比 -->
+<div class="card">
+  <div class="bar-row"><span class="nm">【目录】</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="vol">【N 行 · N%】</span></div>
+  <div class="bar-row"><span class="nm">【目录】</span><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><span class="vol">【N 行 · N%】</span></div>
+</div>
+
+<!-- 组件：架构双栏对比图。before 虚线框灰系，after 实线框主题色；
+     channel = 节点 + 带标签的箭头线；.duplex 双向，.dead 虚线（废弃/未接线），.hot 强调 -->
+<div class="arch">
+  <div class="panel before">
+    <h4>以前 · 【一句话】</h4>
+    <div class="channel">
+      <span class="node">【节点】</span>
+      <div class="pipe"><span class="lbl">【通道说明】</span><div class="ln"></div></div>
+      <span class="node">【节点】</span>
+    </div>
+    <div class="channel">
+      <span class="node">【节点】</span>
+      <div class="pipe dead"><span class="lbl">【废弃/未接线的通道】</span><div class="ln"></div></div>
+      <span class="node gone">【消失的节点】</span>
+    </div>
+  </div>
+  <div class="panel after">
+    <h4>现在 · 【一句话】</h4>
+    <div class="channel">
+      <span class="node hot">【节点】</span>
+      <div class="pipe hot duplex"><span class="lbl">【双向通道说明】</span><div class="ln"></div></div>
+      <span class="node hot">【节点】</span>
+    </div>
+  </div>
+</div>
+
+<h2 id="s2"><span class="no">2</span>旅程 A：【用户操作】</h2>
+
+<p>【旅程开场：一两句说这条旅程从哪到哪、走通后掌握了什么。】</p>
+
+<!-- 组件：旅程全景条。放在每条旅程开头做定位，列出途经文件；深度由正文承担 -->
+<div class="overview">
+  <div class="ttl">全景 · 涉及 【N】 个文件</div>
+  <div class="hops">
+    <span class="hop">【环节】<br><span class="dim" style="font-weight:400">【文件名】</span></span><span class="hop-arrow">→</span>
+    <span class="hop plain">【无需展开的环节】</span><span class="hop-arrow">→</span>
+    <span class="hop">【环节】<br><span class="dim" style="font-weight:400">【文件名】</span></span>
+  </div>
+</div>
+
+<h3 id="s2-1"><span class="hno">A.1</span>【这一跳讲什么】</h3>
+
+<p>【叙述：先把问题/场景摆清楚，再上代码。】</p>
+
+<!-- 组件：代码块 = codecap（文件位置头）+ pre。
+     span.c = 源码原注释（灰），span.a = 解读注释（青）。HTML 特殊字符须转义 -->
+<div class="codecap"><span class="f">【path/to/file.ts】</span><span>真实代码（节选）</span></div>
+<pre><code>export function example(input: Input): Output {
+  <span class="c">// 源码原注释的保留或意译用灰色</span>
+  return transform(input)   <span class="a">// 解读所加的注释用青色，指出这行为什么关键</span>
+}</code></pre>
+
+<!-- 组件：前后对比双栏（改动过的流程用）。左 before 右 after，步骤盒 .step 之间用 .dn 放 ↓ -->
+<div class="vs-grid">
+  <div>
+    <div class="col-h b">以前</div>
+    <div class="flow">
+      <div class="step">【步骤】</div>
+      <div class="dn">↓</div>
+      <div class="step">【步骤】</div>
+    </div>
+  </div>
+  <div>
+    <div class="col-h a">现在</div>
+    <div class="flow">
+      <div class="step">【步骤】</div>
+      <div class="dn">↓</div>
+      <div class="step">【步骤，关键差异处加粗】</div>
+    </div>
+  </div>
+</div>
+
+<!-- 组件：排查路标。每条旅程的收尾必备：症状 → 文件/函数 -->
+<div class="waypoint">
+  <h5>排查路标 · 旅程 A</h5>
+  <table>
+    <tr><th style="width:46%">症状</th><th>从哪下手</th></tr>
+    <tr><td>【可观察的症状】</td><td><code>【文件】</code>：【看哪个函数/哪个状态】</td></tr>
+  </table>
+</div>
+
+<!-- 组件：提示框。callout = 规范/配方类提示；callout warn = 风险/必办事项 -->
+<div class="callout">
+  <strong>【规范或配方标题】</strong>：【内容，例如"新增一个 API 端点的标准步骤：① … ② …"】
+</div>
+<div class="callout warn">
+  <strong>【风险提示标题】</strong>：【内容。风险等级用 🔴🟠🟡⚪ 表示】
+</div>
+
+<!-- 组件：心智模型补丁卡。"以前可假设 X / 现在必须 Y"，.why 可选 -->
+<div class="patch">
+  <span class="was">【以前成立的假设】</span>
+  <span class="now">【现在的新规则】</span>
+  <div class="why">【可选：一句展开，例如标准做法的三步。】</div>
+</div>
+
+<!-- 组件：表格。用于词表（th colspan 分组）、订阅流对照、设计重心/可略过 等枚举类内容 -->
+<table>
+  <tr><th colspan="2">【分组名】</th></tr>
+  <tr><td><code>【术语】</code></td><td>【一句白话解释】</td></tr>
+</table>
+
+<p class="footer-note">【仓库 · 分支 · 统计】 · 本报告为一次性理解辅助，不维护、不作为真相源。</p>
+
+</main>
+</body>
+</html>
