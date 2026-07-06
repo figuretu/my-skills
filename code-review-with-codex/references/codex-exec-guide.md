@@ -72,7 +72,7 @@ codex exec --json "<prompt>" | jq
 
 ```bash
 mkdir -p .ai_docs/codex_call
-codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
+codex exec --full-auto -m gpt-5.5 -c model_reasoning_effort=xhigh \
   -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
