@@ -10,6 +10,14 @@ This file provides guidance to Agents when working with code in this repository.
 - **根目录** 的 skill 是公开的，推送到 GitHub，全局安装
 - **`private/`** 目录是独立的 git 仓库（被父仓库 `.gitignore` 忽略），推送到内网仓库，仅在特定仓库级别安装
 
+## 参考仓库 (`.ref/`)
+
+`.ref/` 用于存放准备参考的外部仓库，例如其他 skill、plugin 或示例项目。需要参考外部项目时，将其 clone 到 `.ref/<repo-name>` 下。
+
+- `.ref/` 被父仓库 `.gitignore` 忽略，不作为本仓库的 public/private skill 来源
+- `.ref/` 中的项目仅用于阅读、对照和借鉴，不参与 `README.md` 的 Skills 列表维护，也不通过本仓库的 skill 安装流程发布
+- 除非用户明确要求，不要修改 `.ref/` 中参考仓库的内容；如果需要重新 clone，先检查目标目录是否已经存在
+
 ## 语言规范 (Language Convention)
 
 **重要**: 

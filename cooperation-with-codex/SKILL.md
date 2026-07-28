@@ -80,7 +80,7 @@ mkdir -p .ai_docs/codex_call
 #### 默认命令模板
 
 ```bash
-codex exec --full-auto -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
+codex exec --full-auto -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
   -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
@@ -141,7 +141,7 @@ git diff
 用户可指定不同的模型或推理强度：
 
 ```bash
-codex exec --full-auto -m gpt-5.2 -c model_reasoning_effort=high \
+codex exec --full-auto -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
   -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 
@@ -160,7 +160,7 @@ codex exec --full-auto -m gpt-5.2 -c model_reasoning_effort=high \
 
 ```bash
 codex exec --full-auto --sandbox danger-full-access \
-  -m gpt-5.3-codex -c model_reasoning_effort=xhigh \
+  -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
   -C "<workdir>" "<prompt>" 2>.ai_docs/codex_call/<描述性文件名>.log
 ```
 

@@ -1,4 +1,5 @@
 .claude/
+.ref/
 dist/
 .ai_docs/
 private/

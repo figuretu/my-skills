@@ -12,6 +12,9 @@
     },
     "spec-review-with-codex": {
       "agents": ["claude-code"]
+    },
+    "pr-walkthrough": {
+      "agents": ["claude-code"]
     }
   }
 }
